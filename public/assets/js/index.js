@@ -33,6 +33,7 @@ const getNotes = () =>
     },
   });
 
+  // request to post note 
 const saveNote = (note) =>
   fetch('/api/notes', {
     method: 'POST',
@@ -42,6 +43,7 @@ const saveNote = (note) =>
     body: JSON.stringify(note),
   });
 
+  // request to delete note
 const deleteNote = (id) =>
   fetch(`/api/notes/${id}`, {
     method: 'DELETE',
@@ -50,6 +52,7 @@ const deleteNote = (id) =>
     },
   });
 
+  // hide save button until a note is written for saving
 const renderActiveNote = () => {
   hide(saveNoteBtn);
 
@@ -66,6 +69,7 @@ const renderActiveNote = () => {
   }
 };
 
+// save note
 const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
