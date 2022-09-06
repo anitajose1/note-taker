@@ -5,39 +5,44 @@ const uniqid = require('uniqid')
 
 const router = require('express').Router()
 
+// let db = fs.readFileSync('db/db.json')
+// db = JSON.parse(db)
+let db = JSON.parse(fs.readFileSync('db/db.json'))
+
 // read the db.json file and return saved notes as json
-router.get('/notes', (req, res) => {
+router.get('api/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '../db/db.json'))
+    res.json(db)
 })
 
 // receive a new note, add it to db.json, and return it to the client
-router.post('/notes', (req, res) => {
+router.post('api/notes', (req, res) => {
     console.log("Req body:", req.body)
-    let db = fs.readFileSync('../db/db.json')
-    db = JSON.parse(db)
     res.json(db)
-    // create notes body
+    // // create notes body
     let createNote = {
         title: req.body.title,
         text: req.body.text,
         // unique id for the note
         id: uniqid()
     }
-    // push the new note to db.json
     db.push(createNote)
-    fs.writeFileSync('../db/db.json', JSON.stringify(db))
-    res.json(db)
+    updateDb()
+    return console.log("New note added: " + createNote.title)
 })
 
 // delete a note by using its id
-router.delete('/notes/:id', (req, res) => {
-    // read notes from db.json
-    let db = JSON.parse(fs.readFileSync('../db/db.json'))
-    // delete note with id
-    let deleteNote = db.filter(item => item.id !== req.params.id)
-    // rewrite note to dn.json
-    fs.writeFileSync('../db/db.json', json.stringify(deleteNote))
-    res.join(deleteNote)
+router.delete('api/notes/:id', (req, res) => {
+    db.splice(req.params.id, 1)
+    updateDb()
+    console.log("Deleted note with id: " + req.params.id);
 })
+
+function updateDb() {
+    fs.writeFile("db/db.json",json.stringify(db, '\t'),err => {
+        if(err) throw err
+        return true
+    })
+}
 
 module.exports = router
